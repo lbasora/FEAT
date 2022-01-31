@@ -23,6 +23,41 @@ class FlightProfiles:
         dfg = df.groupby("id")
         return cls((fp for _, fp in dfg), max(dfg.ngroup()) + 1)
 
+    @classmethod
+    def from_traffic(cls, t):
+        cumul = []
+        d = dict()
+        for flight in t:
+            d["ts"] = (
+                flight.data.timestamp.diff()
+                .dt.seconds.fillna(0)
+                .astype("int")
+                .cumsum()
+                .values
+            )
+            d["h"] = flight.data.altitude.values * aero.ft
+            d["s"] = (
+                flight.cumulative_distance(
+                    compute_gs=False, compute_track=False
+                ).data.cumdist.values
+                * aero.nm
+            )
+            d["v"] = (
+                abs(
+                    (
+                        flight.data.TAS
+                        if "TAS" in flight.data.columns
+                        else flight.data.groundspeed
+                    ).values
+                )
+                * aero.kts
+            )
+            d["vs"] = flight.data.vertical_rate.values * aero.fpm
+            d["fp"] = flight.data.phase if "phase" in flight.data.columns else None
+            d["id"] = flight.data.flight_id
+            cumul.append(pd.DataFrame.from_dict(d))
+        return cls.from_df(pd.concat(cumul))
+
     def to_df(self):
         return pd.concat(self.fpg).reset_index(drop=True)
 
