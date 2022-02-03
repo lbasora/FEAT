@@ -8,4 +8,8 @@ setup(
     packages=find_packages(),
     install_requires=["numpy", "pandas", "openap", "statsmodels", "tqdm", "traffic"],
     python_requires=">=3.8",
+    include_package_data=True,
+    package_data={
+        "feat.data": ["seats.csv"],
+    },
 )
