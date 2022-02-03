@@ -25,10 +25,14 @@ class FlightProfiles:
 
     @classmethod
     def from_traffic(cls, t):
+        """
+        Build flight profiles from a Traffic t structure (see traffic library doc):
+        https://traffic-viz.github.io/traffic.core.traffic.html?highlight=traffic#traffic.core.Traffic
+        """
         cumul = []
         d = dict()
         for flight in t:
-            d["ts"] = (
+            d["t"] = (
                 flight.data.timestamp.diff()
                 .dt.seconds.fillna(0)
                 .astype("int")
@@ -53,9 +57,10 @@ class FlightProfiles:
                 * aero.kts
             )
             d["vs"] = flight.data.vertical_rate.values * aero.fpm
-            d["fp"] = flight.data.phase if "phase" in flight.data.columns else None
+            # d["fp"] = flight.data.phase if "phase" in flight.data.columns else None
             d["id"] = flight.data.flight_id
-            cumul.append(pd.DataFrame.from_dict(d))
+            df = FlightPhaseEstimator()(pd.DataFrame.from_dict(d))
+            cumul.append(df)
         return cls.from_df(pd.concat(cumul))
 
     def to_df(self):
@@ -64,7 +69,7 @@ class FlightProfiles:
 
 def gentraj(ac_type, duration, altitude, dt_cr=60, dt_cl=30, dt_de=30):
     trajgen = Generator(ac=ac_type)
-    wrap = WRAP(ac=ac_type)
+    wrap = WRAP(ac=ac_type, use_synonym=True)
     data_cl = trajgen.climb(dt=dt_cl, alt_cr=altitude)
     data_cr = trajgen.cruise(
         dt=dt_cr,
@@ -136,7 +141,11 @@ def gen_flight_profile(
     dt_de=30,
     verbose=False,
 ):
-    wrap = WRAP(ac=ac_type)
+    """
+    See appendix B of FEAT paper for algorithm details flight mission simulation:
+    https://ars.els-cdn.com/content/image/1-s2.0-S136192092030715X-mmc8.pdf
+    """
+    wrap = WRAP(ac=ac_type, use_synonym=True)
     min_cr_alt, max_cr_alt = (
         wrap.cruise_alt()["minimum"] * 1e3 / aero.ft,
         wrap.cruise_alt()["maximum"] * 1e3 / aero.ft,
@@ -205,8 +214,8 @@ class FlightProfileGenerator:
     def __init__(self, ac_type, eng_type=None):
         self.ac_type = ac_type
         self.eng_type = eng_type
-        self.trajgen = Generator(ac=ac_type, eng=eng_type)
-        self.wrap = WRAP(ac=ac_type)
+        self.trajgen = Generator(ac=ac_type, eng=eng_type, use_synonym=True)
+        self.wrap = WRAP(ac=ac_type, use_synonym=True)
         self.aircraft = prop.aircraft(ac_type)
 
     def __call__(self, step=100, dt=10):
