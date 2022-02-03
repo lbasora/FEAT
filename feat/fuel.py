@@ -11,7 +11,7 @@ class FuelEstimator:
         self.ac_type = ac_type
         self.eng_type = eng_type
         self.thrust = Thrust(ac=ac_type, eng=eng_type)
-        self.fuelflow = FuelFlow(ac=ac_type, eng=eng_type)
+        self.fuelflow = FuelFlow(ac=ac_type, eng=eng_type, use_synonym=True)
         self.mass = Mass(self, ac_type=ac_type, eng_type=eng_type)
 
     def __call__(self, flight_profiles, last_point=False):
@@ -24,6 +24,14 @@ class FuelEstimator:
         return FlightProfiles(generate(), length)
 
     def compute_fuel(self, flight_profile, mass, last_point=False):
+        """
+        Compute fuel from flight profile:
+        Iteration over Dataframe needed:
+            Implemented via numpy array iteration (faster than iterrows or itertuples):
+            https://towardsdatascience.com/heres-the-most-efficient-way-to-iterate-through-your-pandas-dataframe-4dad88ac92ee
+            TODO: cython, numba implementation ?
+        """
+
         def compute_thr(fp, v, h, vs):
             if fp == "TO":
                 return self.thrust.takeoff(tas=v, alt=h)
@@ -115,6 +123,10 @@ class Mass:
         return avg_load_factor * avg_num_seats * passenger_luggage_mass
 
     def compute_tow(self, flight_profile, return_tow_only=True):
+        """
+        See appendix G FEAT paper for algorithm details fuel load estimation:
+        https://ars.els-cdn.com/content/image/1-s2.0-S136192092030715X-mmc8.pdf
+        """
         tow = self.reference_mass
         res_cruise = self.fpg.gen_cruise_for_fuel_reserve()
         alt_flight = self.fpg.gen_flight_for_alternate_fuel()
