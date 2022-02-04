@@ -28,12 +28,12 @@ Alternatively, flight profiles can be built from ADS-B trajectories contained i 
 from traffic.core import Traffic
 from feat import FlightProfiles
 
-t = Traffic.from_file("traffic_file.csv")
+t = Traffic.from_file("data/adsb_sample.parquet")
 fp_df = FlightProfiles.from_traffic(t).to_df()
 fp_df.head()
 ```
 ```
- 	ts 	h 		s 		v 		vs 		fp 	id 
+ 	t 	h 		s 		v 		vs 		fp 	id 
 0 	0 	381.000 	0.000000e+00 	88.998812 	13.655040 	CLIMB 	AFR1044_003
 1 	1 	393.192 	6.150660e+01 	88.998812 	13.720064 	CLIMB 	AFR1044_003
 2 	2 	405.384 	1.230133e+02 	88.998812 	13.785088 	CLIMB 	AFR1044_003
@@ -74,9 +74,16 @@ for ax, (id, fp) in zip(axes.flat, fp_df.groupby("id")):
 ![Screenshot](fe_plot.png)
 
 ## Installation
-First, create a conda environment with the traffic library and its dependencies installed in it (see [traffic installation instructions](https://github.com/xoolive/traffic/blob/master/readme.md)).
+1) create a conda environment with the traffic library and its dependencies installed in it (see [traffic installation instructions](https://github.com/xoolive/traffic/blob/master/readme.md)).
 
-Then install FEAT in the same conda environment:
+In the same conda environment:
+
+2) install OpenAP (version with some bug corrections)
+```sh
+pip install -U git+https://github.com/lbasora/openap.git@bugs
+```
+
+3) install FEAT 
 ```sh
 git clone https://github.com/lbasora/feat
 cd feat
