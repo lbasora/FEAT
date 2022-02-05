@@ -62,7 +62,6 @@ target/
 
 #vs code
 .vscode
-*.code-workspace
 
-data/
-*.pkl
+results/
+tests/
