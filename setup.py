@@ -7,7 +7,7 @@ setup(
     license="MIT",
     packages=find_packages(),
     install_requires=["numpy", "pandas", "openap", "statsmodels", "tqdm", "traffic"],
-    python_requires=">=3.8",
+    python_requires=">=3.7.1",
     include_package_data=True,
     package_data={
         "feat.data": ["seats.csv"],
