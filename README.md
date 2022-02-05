@@ -1,7 +1,7 @@
 # Fuel Estimation in Air Transportation (FEAT)
 This is a fork of the original repository containing Jupyter Notebooks and csv files that support the submitted paper *Fuel Estimation in Air Transportation: Modeling global fuel consumption for commercial aviation*.
 
-In addition, an implementation of the paper algorithms in Python based on the [OpenAP](https://github.com/junzis/openap) is under development. 
+In addition, an implementation of the paper algorithms in Python based on the [OpenAP](https://github.com/junzis/openap) and [traffic](https://github.com/xoolive/traffic) libraries is under development. 
 
 ## Using FEAT Python Library
 
@@ -19,7 +19,7 @@ fig, ax = plt.subplots(figsize=(15, 7))
 for (_, fp) in fp_df.assign(h=fp_df.h / aero.ft, s=fp_df.s / 1e3).groupby("id"):
     fp.plot(x="s", y="h", ax=ax, legend=False)
 ```
-![Screenshot](fps_plot.png)
+![Screenshot](blob/fps_plot.png)
 
 
 Alternatively, flight profiles can be built from ADS-B trajectories contained i a [Traffic data structure](https://traffic-viz.github.io/traffic.core.traffic.html?highlight=traffic#traffic.core.Traffic) (see [traffic](https://github.com/xoolive/traffic) library).
@@ -71,7 +71,7 @@ for ax, (id, fp) in zip(axes.flat, fp_df.groupby("id")):
         legend=False,
     )
 ```
-![Screenshot](fe_plot.png)
+![Screenshot](blob/fe_plot.png)
 
 ## Installation
 1) create a conda environment with the traffic library and its dependencies installed in it (see [traffic installation instructions](https://github.com/xoolive/traffic/blob/master/readme.md)).
