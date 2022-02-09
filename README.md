@@ -38,7 +38,8 @@ fp_df = flight_profiles.to_df()
 3 	90 	0.0 	5211.0 	130.8 	12.59 	IC 	CL 	5 	109309.923013 	1.354792 	187.620401 	61745.836487
 4 	120 	377.7 	9135.0 	145.8 	12.59 	IC 	CL 	5 	101653.894487 	1.278205 	225.966546 	61707.490342
 ```
-Initial take-off weight mass (TOW) is estimated based on the fuel load calculation procedure described in the FEAT paper (Appendix G for details).
+Initial take-off weight mass (TOW) is estimated based on the fuel load calculation procedure described in the FEAT paper (Appendix G for details). 
+Please noticed *fc* column in the dataframe is the cumulative fuel consomption.
 
 
 Alternatively, flight profiles can be built from ADS-B trajectories contained in a [Traffic data structure](https://traffic-viz.github.io/traffic.core.traffic.html?highlight=traffic#traffic.core.Traffic) (see [traffic](https://github.com/xoolive/traffic) library).
