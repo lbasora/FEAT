@@ -278,7 +278,7 @@ class FlightProfileGenerator:
             if self.aircraft["engine"]["type"] == "turboprop"
             else 30 * 60  # turbofan/pistion
         )
-        cruise = self.trajgen.cruise(dt=duration, alt_cr=1500, random=True)
+        cruise = self.trajgen.cruise(dt=duration, alt_cr=1500)
         cruise = dict(
             (key, value[:2] if isinstance(value, np.ndarray) else value)
             for key, value in cruise.items()
@@ -287,7 +287,13 @@ class FlightProfileGenerator:
 
     def gen_flight_for_alternate_fuel(self):
         return FlightPhaseEstimator()(
-            _to_df(self.trajgen.complete(dt=30, range_cr=0, random=True))
+            _to_df(
+                self.trajgen.complete(
+                    dt=30,
+                    range_cr=0,
+                    # alt_cr=self.wrap.cruise_alt()["minimum"] * 1e3 / aero.ft,
+                )
+            )
         )
 
 
