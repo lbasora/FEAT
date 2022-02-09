@@ -64,19 +64,15 @@ class FuelEstimator:
         ff = flight_profile.ff.values
         fc = flight_profile.fc.values
         m = flight_profile.m.values
-        m_prev = mass
-        t_prev = 0
-        for i in range(len(flight_profile)):
+        thr[0], ff[0], fc[0], m[0] = 0.0, 0.0, 0.0, mass
+        for i in range(1, len(flight_profile)):
             if thr[i] == np.NaN:
                 continue
             v_i, h_i, vs_i = v[i] / aero.kts, h[i] / aero.ft, vs[i] / aero.fpm
             thr[i] = compute_thr(fp[i], v_i, h_i, vs_i)
-            ff[i] = compute_ff(fp[i], v_i, h_i, thr[i], m_prev)
-            dt = t[i] - t_prev
-            t_prev = t[i]
-            fc[i] = ff[i] * dt
-            m[i] = m_prev - fc[i]
-            m_prev = m[i]
+            ff[i] = compute_ff(fp[i], v_i, h_i, thr[i], m[i - 1])
+            fc[i] = ff[i] * (t[i] - t[i - 1])
+            m[i] = m[i - 1] - fc[i]
 
         flight_profile = flight_profile.assign(fc=flight_profile.fc.cumsum(skipna=True))
         flight_profile["ff"] = flight_profile["ff"].astype("float")
