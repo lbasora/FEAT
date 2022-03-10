@@ -1,7 +1,9 @@
 # Fuel Estimation in Air Transportation (FEAT)
-This is a fork of the original repository containing Jupyter Notebooks and csv files that support the submitted paper *Fuel Estimation in Air Transportation: Modeling global fuel consumption for commercial aviation*.
+This fork is an implementation attempt (under development) of the FEAT method described in the paper *Fuel Estimation in Air Transportation: Modeling global fuel consumption for commercial aviation*. 
 
-In addition, an implementation of the paper algorithms in Python based on the [OpenAP](https://github.com/junzis/openap) and [traffic](https://github.com/xoolive/traffic) libraries is under development. 
+The Jupyter Notebooks and csv files of the original repository have been moved to the folder named *paper*.
+
+The paper algorithms are coded in Python and built on top of the [OpenAP](https://github.com/junzis/openap) and [traffic](https://github.com/xoolive/traffic) libraries. 
 
 ## Using FEAT Python Library
 
